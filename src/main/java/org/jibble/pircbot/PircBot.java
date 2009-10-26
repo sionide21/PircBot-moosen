@@ -14,9 +14,23 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 /**
  * PircBot is a Java framework for writing IRC bots quickly and easily.
@@ -67,7 +81,6 @@ public abstract class PircBot implements ReplyConstants {
     private static final int OP_REMOVE = 2;
     private static final int VOICE_ADD = 3;
     private static final int VOICE_REMOVE = 4;
-    
     
     /**
      * Constructs a PircBot with the default settings.  Your own constructors
@@ -138,7 +151,7 @@ public abstract class PircBot implements ReplyConstants {
         
         // Connect to the server.
         Socket socket =  new Socket(hostname, port);
-        this.log("*** Connected to server.");
+        this.debug("*** Connected to server.");
         
         _inetAddress = socket.getLocalAddress();
         
@@ -206,7 +219,7 @@ public abstract class PircBot implements ReplyConstants {
             
         }
         
-        this.log("*** Logged onto server.");
+        this.debug("*** Logged onto server.");
         
         // This makes the socket timeout on read operations after 5 minutes.
         // Maybe in some future version I will let the user change this at runtime.
@@ -836,28 +849,12 @@ public abstract class PircBot implements ReplyConstants {
 
 
     /**
-     * Adds a line to the log.  This log is currently output to the standard
-     * output and is in the correct format for use by tools such as pisg, the
-     * Perl IRC Statistics Generator.  You may override this method if you wish
-     * to do something else with log entries.
-     * Each line in the log begins with a number which
-     * represents the logging time (as the number of milliseconds since the
-     * epoch).  This timestamp and the following log entry are separated by
-     * a single space character, " ".  Outgoing messages are distinguishable
-     * by a log entry that has ">>>" immediately following the space character
-     * after the timestamp.  DCC events use "+++" and warnings about unhandled
-     * Exceptions and Errors use "###".
-     *  <p>
-     * This implementation of the method will only cause log entries to be
-     * output if the PircBot has had its verbose mode turned on by calling
-     * setVerbose(true);
+     * This is a shortcut method to LOGGER.debug.
      * 
      * @param line The line to add to the log.
      */
-    public void log(String line) {
-        if (_verbose) {
-            System.out.println(System.currentTimeMillis() + " " + line);
-        }
+    public void debug(String line) {
+            LOGGER.debug(line);
     }
 
 
@@ -871,7 +868,7 @@ public abstract class PircBot implements ReplyConstants {
      * @param line The raw line of text from the server.
      */
     protected void handleLine(String line) {
-        this.log(line);
+        this.debug(line);
 
         // Check for server pings.
         if (line.startsWith("PING ")) {
@@ -2320,20 +2317,6 @@ public abstract class PircBot implements ReplyConstants {
         // And then there were none :)
     }
         
-    
-    /**
-     * Sets the verbose mode. If verbose mode is set to true, then log entries
-     * will be printed to the standard output. The default value is false and
-     * will result in no output. For general development, we strongly recommend
-     * setting the verbose mode to true.
-     *
-     * @param verbose true if verbose mode is to be used.  Default is false.
-     */
-    public final void setVerbose(boolean verbose) {
-        _verbose = verbose;
-    }
-    
-    
     /**
      * Sets the name of the bot, which will be used as its nick when it
      * tries to join an IRC server.  This should be set before joining
@@ -3081,7 +3064,6 @@ public abstract class PircBot implements ReplyConstants {
     
     // Default settings for the PircBot.
     private boolean _autoNickChange = false;
-    private boolean _verbose = false;
     private String _name = "PircBot";
     private String _nick = _name;
     private String _login = "PircBot";
@@ -3089,4 +3071,17 @@ public abstract class PircBot implements ReplyConstants {
     private String _finger = "You ought to be arrested for fingering a bot!";
     
     private String _channelPrefixes = "#&+!";
+    
+    private static Logger LOGGER = Logger.getLogger(PircBot.class);
+    
+    /**
+     * If no log4j config file is present, disable logging to prevent warning messages 
+     * if a program doesn't enable logging.
+     */
+    static {
+    	Logger root = Logger.getRootLogger();
+    	if (!root.getAllAppenders().hasMoreElements()) {
+    		LOGGER.setLevel(Level.OFF);
+    	}
+    }
 }

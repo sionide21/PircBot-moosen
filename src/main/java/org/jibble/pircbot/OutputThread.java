@@ -65,7 +65,7 @@ public class OutputThread extends Thread {
             try {
                 bwriter.write(line + "\r\n");
                 bwriter.flush();
-                bot.log(">>>" + line);
+                bot.debug(">>>" + line);
             }
             catch (Exception e) {
                 // Silent response - just lose the line.

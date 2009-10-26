@@ -99,13 +99,13 @@ public class InputThread extends Thread {
                             pw.flush();
                             StringTokenizer tokenizer = new StringTokenizer(sw.toString(), "\r\n");
                             synchronized (_bot) {
-                                _bot.log("### Your implementation of PircBot is faulty and you have");
-                                _bot.log("### allowed an uncaught Exception or Error to propagate in your");
-                                _bot.log("### code. It may be possible for PircBot to continue operating");
-                                _bot.log("### normally. Here is the stack trace that was produced: -");
-                                _bot.log("### ");
+                                _bot.debug("### Your implementation of PircBot is faulty and you have");
+                                _bot.debug("### allowed an uncaught Exception or Error to propagate in your");
+                                _bot.debug("### code. It may be possible for PircBot to continue operating");
+                                _bot.debug("### normally. Here is the stack trace that was produced: -");
+                                _bot.debug("### ");
                                 while (tokenizer.hasMoreTokens()) {
-                                    _bot.log("### " + tokenizer.nextToken());
+                                    _bot.debug("### " + tokenizer.nextToken());
                                 }
                             }
                         }
@@ -136,7 +136,7 @@ public class InputThread extends Thread {
         }
 
         if (!_disposed) {
-            _bot.log("*** Disconnected.");        
+            _bot.debug("*** Disconnected.");        
             _isConnected = false;
             _bot.onDisconnect();
         }
