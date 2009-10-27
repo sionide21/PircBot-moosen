@@ -40,7 +40,8 @@ public class DccChat {
      * 
      * @throws IOException If the connection cannot be made.
      */
-    DccChat(PircBot bot, String nick, String login, String hostname, long address, int port) {
+    @SuppressWarnings("unchecked")
+    DccChat(AbstractPircBot bot, String nick, String login, String hostname, long address, int port) {
         _bot = bot;
         _address = address;
         _port = port;
@@ -62,7 +63,8 @@ public class DccChat {
      * 
      * @throws IOException If the socket cannot be read from.
      */
-    DccChat(PircBot bot, String nick, Socket socket) throws IOException {
+    @SuppressWarnings("unchecked")
+    DccChat(AbstractPircBot bot, String nick, Socket socket) throws IOException {
         _bot = bot;
         _nick = nick;
         _socket = socket;
@@ -212,8 +214,8 @@ public class DccChat {
         return _address;
     }
 
-    
-    private PircBot _bot;
+    @SuppressWarnings("unchecked")
+    private AbstractPircBot _bot;
     private String _nick;
     private String _login = null;
     private String _hostname = null;

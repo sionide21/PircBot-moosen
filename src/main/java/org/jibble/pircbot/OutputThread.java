@@ -14,8 +14,7 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedWriter;
 
 /**
  * A Thread which is responsible for sending messages to the IRC server.
@@ -40,7 +39,8 @@ public class OutputThread extends Thread {
      * @param bot The underlying PircBot instance.
      * @param outQueue The Queue from which we will obtain our messages.
      */
-    OutputThread(PircBot bot, Queue outQueue) {
+    @SuppressWarnings("unchecked")
+    OutputThread(AbstractPircBot bot, Queue outQueue) {
         _bot = bot;
         _outQueue = outQueue;
         this.setName(this.getClass() + "-Thread");
@@ -57,7 +57,8 @@ public class OutputThread extends Thread {
      * @param encoding The charset to use when encoing this string into a
      *                 byte array.
      */
-    static void sendRawLine(PircBot bot, BufferedWriter bwriter, String line) {
+    @SuppressWarnings("unchecked")
+    static void sendRawLine(AbstractPircBot bot, BufferedWriter bwriter, String line) {
         if (line.length() > bot.getMaxLineLength() - 2) {
             line = line.substring(0, bot.getMaxLineLength() - 2);
         }
@@ -98,8 +99,9 @@ public class OutputThread extends Thread {
             // Just let the method return naturally...
         }
     }
-    
-    private PircBot _bot = null;
+
+    @SuppressWarnings("unchecked")
+    private AbstractPircBot _bot = null;
     private Queue _outQueue = null;
     
 }

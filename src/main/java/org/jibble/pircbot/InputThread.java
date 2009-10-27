@@ -38,7 +38,8 @@ public class InputThread extends Thread {
      * @param breader The BufferedReader that reads lines from the server.
      * @param bwriter The BufferedWriter that sends lines to the server.
      */
-    InputThread(PircBot bot, Socket socket, BufferedReader breader, BufferedWriter bwriter) {
+    @SuppressWarnings("unchecked")
+    InputThread(AbstractPircBot bot, Socket socket, BufferedReader breader, BufferedWriter bwriter) {
         _bot = bot;
         _socket = socket;
         _breader = breader;
@@ -156,8 +157,9 @@ public class InputThread extends Thread {
             // Do nothing.
         }
     }
-    
-    private PircBot _bot = null;
+
+    @SuppressWarnings("unchecked")
+    private AbstractPircBot _bot = null;
     private Socket _socket = null;
     private BufferedReader _breader = null;
     private BufferedWriter _bwriter = null;

@@ -14,7 +14,8 @@ found at http://www.jibble.org/licenses/
 
 package org.jibble.pircbot;
 
-import java.util.*;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * This class is used to process DCC events from the server.
@@ -32,7 +33,8 @@ public class DccManager {
      * 
      * @param bot The PircBot whose DCC events this class will handle.
      */
-    DccManager(PircBot bot) {
+    @SuppressWarnings("unchecked")
+    DccManager(AbstractPircBot bot) {
         _bot = bot;
     }
     
@@ -144,8 +146,9 @@ public class DccManager {
         _awaitingResume.removeElement(transfer);
     }
     
-    
-    private PircBot _bot;
+
+    @SuppressWarnings("unchecked")
+    private AbstractPircBot _bot;
     private Vector _awaitingResume = new Vector();
     
 }
