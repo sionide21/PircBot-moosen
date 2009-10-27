@@ -33,8 +33,7 @@ public class DccManager {
      * 
      * @param bot The PircBot whose DCC events this class will handle.
      */
-    @SuppressWarnings("unchecked")
-    DccManager(AbstractPircBot bot) {
+    DccManager(@SuppressWarnings("unchecked") AbstractPircBot bot) {
         _bot = bot;
     }
     
@@ -149,6 +148,6 @@ public class DccManager {
 
     @SuppressWarnings("unchecked")
     private AbstractPircBot _bot;
-    private Vector _awaitingResume = new Vector();
+    private Vector<DccFileTransfer> _awaitingResume = new Vector<DccFileTransfer>();
     
 }

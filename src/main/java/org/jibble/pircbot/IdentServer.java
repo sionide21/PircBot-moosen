@@ -56,8 +56,7 @@ public class IdentServer extends Thread {
      * @param bot The PircBot instance that will be used to log to.
      * @param login The login that the ident server will respond with.
      */
-    @SuppressWarnings("unchecked")
-    IdentServer(AbstractPircBot bot, String login) {
+    IdentServer(@SuppressWarnings("unchecked") AbstractPircBot bot, String login) {
         _bot = bot;
         _login = login;
 

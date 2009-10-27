@@ -34,7 +34,7 @@ import java.util.Vector;
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
  * @version    1.4.6 (Build time: Wed Apr 11 19:20:59 2007)
  */
-public class Queue {
+public class Queue<T> {
     
 
     /**
@@ -50,7 +50,7 @@ public class Queue {
      *
      * @param o The Object to be added to the Queue.
      */
-    public void add(Object o) {
+    public void add(T o) {
         synchronized(_queue) {
             _queue.addElement(o);
             _queue.notify();
@@ -63,7 +63,7 @@ public class Queue {
      * 
      * @param o The Object to be added to the Queue.
      */
-    public void addFront(Object o) {
+    public void addFront(T o) {
         synchronized(_queue) {
             _queue.insertElementAt(o, 0);
             _queue.notify();
@@ -79,9 +79,9 @@ public class Queue {
      *
      * @return The next item from the front of the queue.
      */
-    public Object next() {
+    public T next() {
         
-        Object o = null;
+        T o = null;
         
         // Block if the Queue is empty.
         synchronized(_queue) {
@@ -141,6 +141,6 @@ public class Queue {
     }
     
 
-    private Vector _queue = new Vector();
+    private Vector<T> _queue = new Vector<T>();
     
 }

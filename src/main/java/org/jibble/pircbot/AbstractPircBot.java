@@ -2744,11 +2744,11 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
      *
      * @return true if and only if Object o is a PircBot and equal to this.
      */
-    @SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
         // This probably has the same effect as Object.equals, but that may change...
         if (o instanceof AbstractPircBot) {
-            AbstractPircBot other = (AbstractPircBot) o;
+        	@SuppressWarnings("unchecked") 
+        	AbstractPircBot other = (AbstractPircBot) o;
             return other == this;
         }
         return false;
@@ -3064,7 +3064,7 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
     private String _password = null;
     
     // Outgoing message stuff.
-    private Queue _outQueue = new Queue();
+    private Queue<String> _outQueue = new Queue<String>();
     private long _messageDelay = 1000;
     
     // A Hashtable of channels that points to a selfreferential Hashtable of

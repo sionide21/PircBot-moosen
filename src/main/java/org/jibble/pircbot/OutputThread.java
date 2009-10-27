@@ -39,8 +39,7 @@ public class OutputThread extends Thread {
      * @param bot The underlying PircBot instance.
      * @param outQueue The Queue from which we will obtain our messages.
      */
-    @SuppressWarnings("unchecked")
-    OutputThread(AbstractPircBot bot, Queue outQueue) {
+    OutputThread(@SuppressWarnings("unchecked") AbstractPircBot bot, Queue<String> outQueue) {
         _bot = bot;
         _outQueue = outQueue;
         this.setName(this.getClass() + "-Thread");
@@ -57,8 +56,7 @@ public class OutputThread extends Thread {
      * @param encoding The charset to use when encoing this string into a
      *                 byte array.
      */
-    @SuppressWarnings("unchecked")
-    static void sendRawLine(AbstractPircBot bot, BufferedWriter bwriter, String line) {
+    static void sendRawLine(@SuppressWarnings("unchecked") AbstractPircBot bot, BufferedWriter bwriter, String line) {
         if (line.length() > bot.getMaxLineLength() - 2) {
             line = line.substring(0, bot.getMaxLineLength() - 2);
         }
@@ -86,7 +84,7 @@ public class OutputThread extends Thread {
                 // Small delay to prevent spamming of the channel
                 Thread.sleep(_bot.getMessageDelay());
                 
-                String line = (String) _outQueue.next();
+                String line = _outQueue.next();
                 if (line != null) {
                     _bot.sendRawLine(line);
                 }
@@ -102,6 +100,6 @@ public class OutputThread extends Thread {
 
     @SuppressWarnings("unchecked")
     private AbstractPircBot _bot = null;
-    private Queue _outQueue = null;
+    private Queue<String> _outQueue = null;
     
 }

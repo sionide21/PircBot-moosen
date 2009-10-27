@@ -57,8 +57,7 @@ public class DccFileTransfer {
     /**
      * Constructor used for sending files.
      */
-    @SuppressWarnings("unchecked")
-    DccFileTransfer(AbstractPircBot bot, DccManager manager, File file, String nick, int timeout) {
+    DccFileTransfer(@SuppressWarnings("unchecked") AbstractPircBot bot, DccManager manager, File file, String nick, int timeout) {
         _bot = bot;
         _manager = manager;
         _nick = nick;
