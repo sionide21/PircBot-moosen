@@ -54,7 +54,6 @@ public class User {
         return _prefix;
     }
     
-    
     /**
      * Returns whether or not the user represented by this object is an
      * operator. If the User object has been obtained from a list of users
@@ -90,6 +89,16 @@ public class User {
         return _nick;
     }
     
+    /**
+     * Sets the nick of the user.
+     * 
+     * @param nick The users new nick.
+     */
+    public void setNick(String nick) {
+		this._nick = nick;
+		this._lowerNick = nick.toLowerCase();
+	}
+    
     
     /**
      * Returns the nick of the user complete with their prefix if they
@@ -111,7 +120,6 @@ public class User {
     public boolean equals(String nick) {
         return nick.toLowerCase().equals(_lowerNick);
     }
-    
     
     /**
      * Returns true if the nick represented by this User object is the same
