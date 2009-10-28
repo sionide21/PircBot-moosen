@@ -992,7 +992,7 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
         else if (command.equals("JOIN")) {
             // Someone is joining a channel.
             String channel = target;
-            this.addUser(channel, createUser("", sourceNick));
+            this.addUser(channel, "", createUser(sourceNick));
             this.onJoin(channel, sourceNick, sourceLogin, sourceHostname);
         }
         else if (command.equals("PART")) {
@@ -1180,7 +1180,7 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
                     prefix = ".";
                 }
                 nick = nick.substring(prefix.length());
-                this.addUser(channel, createUser(prefix, nick));
+                this.addUser(channel, prefix, createUser(nick));
             }
         }
         else if (code == RPL_ENDOFNAMES) {
@@ -2903,7 +2903,7 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
      * Add a user to the specified channel in our memory.
      * Overwrite the existing entry if it exists.
      */
-    protected void addUser(String channelName, USER user) {
+    protected void addUser(String channelName, String prefix, USER user) {
         channelName = channelName.toLowerCase();
         synchronized (_channels) {
             CHANNEL channel = _channels.get(channelName);
@@ -2911,7 +2911,7 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
                 channel = createChannel(channelName);
                 _channels.put(channelName, channel);
             }
-            channel.addUser(user);
+            channel.addUser(user, prefix);
         }
     }
     
@@ -2981,11 +2981,10 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
      * {@link User}, you must override this method to return
      * the correct user type. 
      * 
-     * @param flags The user flags.
      * @param name The user name.
      * @return A subclass of {@link User}.
      */
-	protected abstract USER createUser(String flags, String name);
+	protected abstract USER createUser(String name);
     
     /**
      * If you want to use this class with any other Channel class than
@@ -3001,52 +3000,35 @@ public abstract class AbstractPircBot<USER extends User, CHANNEL extends Channel
         channelName = channelName.toLowerCase();
         synchronized (_channels) {
             CHANNEL channel = _channels.get(channelName);
-            USER newUser = null;
             if (channel != null) {
-                for (USER userObj : channel.getUsers()) {
-                    if (userObj.getNick().equalsIgnoreCase(nick)) {
-                        if (userMode == OP_ADD) {
-                            if (userObj.hasVoice()) {
-                                newUser = createUser("@+", nick);
-                            }
-                            else {
-                                newUser = createUser("@", nick);
-                            }
-                        }
-                        else if (userMode == OP_REMOVE) {
-                            if(userObj.hasVoice()) {
-                                newUser = createUser("+", nick);
-                            }
-                            else {
-                                newUser = createUser("", nick);
-                            }
-                        }
-                        else if (userMode == VOICE_ADD) {
-                            if(userObj.isOp()) {
-                                newUser = createUser("@+", nick);
-                            }
-                            else {
-                                newUser = createUser("+", nick);
-                            }
-                        }
-                        else if (userMode == VOICE_REMOVE) {
-                            if(userObj.isOp()) {
-                                newUser = createUser("@", nick);
-                            }
-                            else {
-                                newUser = createUser("", nick);
-                            }
-                        }
+            	USER user = channel.getUser(nick);
+            	if (user == null) {
+            		return;
+            	}
+            	String prefix = channel.getUserPrefix(user);
+                if (userMode == OP_ADD) {
+                    prefix = "@" + prefix;
+                }
+                else if (userMode == OP_REMOVE) {
+                    if(channel.hasVoice(user)) {
+                        prefix = "+";
+                    }
+                    else {
+                        prefix = "";
                     }
                 }
-            }
-            if (newUser != null) {
-                channel.addUser(newUser);
-            }
-            else {
-                // just in case ...
-                newUser = createUser("", nick);
-                channel.addUser(newUser);
+                else if (userMode == VOICE_ADD) {
+                   prefix = prefix + "+";
+                }
+                else if (userMode == VOICE_REMOVE) {
+                    if(channel.isOp(user)) {
+                        prefix = "@";
+                    }
+                    else {
+                        prefix = "";
+                    }
+                }
+                channel.setUserPrefix(nick, prefix);
             }
         }
     }

@@ -33,7 +33,7 @@ public class PircBot extends AbstractPircBot<User, Channel<User>> {
 	}
 	
 	@Override
-	protected User createUser(String flags, String name) {
-		return new User(flags, name);
+	protected User createUser(String name) {
+		return new User(name);
 	}
 }

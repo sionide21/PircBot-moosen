@@ -33,7 +33,8 @@ import java.util.List;
  *
  */
 public class Channel<USER extends User> {
-	private Hashtable<String,USER> users;
+	private Hashtable<String, USER> users;
+	private Hashtable<String, String> userPrefixes;
 	private String name;
 	private String topic;
 	
@@ -43,6 +44,7 @@ public class Channel<USER extends User> {
 	 */
 	public Channel(String name) {
 		this.users = new Hashtable<String, USER>();
+		this.userPrefixes = new Hashtable<String, String>();
 		this.name = name;
 		this.topic = "";
 	}
@@ -52,8 +54,18 @@ public class Channel<USER extends User> {
 	 * 
 	 * @param user The user to add.
 	 */
-	public void addUser(USER user) {
+	public void addUser(USER user, String prefix) {
 		users.put(user.getNick().toLowerCase(), user);
+		userPrefixes.put(user.getNick().toLowerCase(), prefix);
+	}
+	
+	/**
+	 * Gets a user in this channel.
+	 * 
+	 * @param nick The users nick.
+	 */
+	public USER getUser(String nick) {
+		return users.get(nick.toLowerCase());
 	}
 	
 	/**
@@ -62,6 +74,7 @@ public class Channel<USER extends User> {
 	 * @param user The user to remove.
 	 */
 	public USER removeUser(USER user) {
+		userPrefixes.remove(user.getNick().toLowerCase());
 		return users.remove(user.getNick().toLowerCase());
 	}
 	
@@ -71,6 +84,7 @@ public class Channel<USER extends User> {
 	 * @param user The user to remove.
 	 */
 	public USER removeUser(String user) {
+		userPrefixes.remove(user.toLowerCase());
 		return users.remove(user.toLowerCase());
 	}
 	
@@ -84,8 +98,10 @@ public class Channel<USER extends User> {
 	public void renameUser(String oldName, String newName) {
 		USER user = users.remove(oldName);
 		if (user != null) {
+			String prefix = userPrefixes.remove(oldName);
 			user.setNick(newName);
 			users.put(newName, user);
+			userPrefixes.put(newName, prefix);
 		}
 	}
 	
@@ -97,6 +113,108 @@ public class Channel<USER extends User> {
 	public List<USER> getUsers() {
 		return new ArrayList<USER>(users.values());
 	}
+	
+	/**
+     * Returns the prefix of the user.  This will reflect the user's
+     * status in this channel.
+     *
+     * @return The prefix of the user. If there is no prefix, then an empty
+     *         String is returned.
+     *       
+     * @param nick The users nick
+     */
+    public String getUserPrefix(String nick) {
+    	if (userPrefixes.containsKey(nick)) {
+    		return userPrefixes.get(nick);
+    	} 
+    	return "";
+    }
+	
+	/**
+     * Sets the prefix of the user.  This will reflect the user's
+     * status in this channel.
+     *
+     * @param nick The users nick
+     * @param prefix The users prefix
+     */
+    public void setUserPrefix(String nick, String prefix) {
+    	if (userPrefixes.containsKey(nick)) {
+    		userPrefixes.put(nick, prefix);
+    	} 
+    }
+	
+	/**
+     * Sets the prefix of the user.  This will reflect the user's
+     * status in this channel.
+     *
+     * @param user The user
+     * @param prefix The users prefix
+     */
+    public void setUserPrefix(USER user, String prefix) {
+    	setUserPrefix(user.getNick(), prefix);
+    }
+    
+    /**
+     * Returns the prefix of the user.  This will reflect the user's
+     * status in this channel.
+     *
+     * @return The prefix of the user. If there is no prefix, then an empty
+     *         String is returned.
+     *       
+     * @param user The user
+     */
+    public String getUserPrefix(USER user) {
+    	return getUserPrefix(user.getNick().toLowerCase());
+    }
+    
+    /**
+     * Returns whether or not the user represented by this object is an
+     * operator in this channel.
+     * 
+     * @return true if the user is an operator in the channel.
+     * 
+     * @param nick The users nick
+     */
+    public boolean isOp(String nick) {
+        return getUserPrefix(nick).indexOf('@') >= 0;
+    }
+    
+    /**
+     * Returns whether or not the user represented by this object is an
+     * operator in this channel.
+     * 
+     * @return true if the user is an operator in the channel.
+     * 
+     * @param user The user
+     */
+    public boolean isOp(USER user) {
+        return isOp(user.getNick().toLowerCase());
+    }
+    
+    /**
+     * Returns whether or not the user represented by this object has
+     * voice in this channel.
+     * 
+     * @return true if the user has voice in the channel.
+     * 
+     * @param nick The users nick
+     */
+    public boolean hasVoice(String nick) {
+        return getUserPrefix(nick).indexOf('+') >= 0;
+    }
+    
+    /**
+     * Returns whether or not the user represented by this object has
+     * voice in this channel.
+     * 
+     * @return true if the user has voice in the channel.
+     * 
+     * @param user The user
+     */
+    public boolean hasVoice(USER user) {
+        return hasVoice(user.getNick().toLowerCase());
+    }
+    
 
 	/**
 	 * The name of this channel.

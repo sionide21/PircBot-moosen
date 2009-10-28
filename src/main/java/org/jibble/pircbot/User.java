@@ -35,50 +35,10 @@ public class User {
      * @param prefix The status of the user, for example, "@".
      * @param nick The nick of the user.
      */
-    public User(String prefix, String nick) {
-        _prefix = prefix;
+    public User(String nick) {
         _nick = nick;
         _lowerNick = nick.toLowerCase();
     }
-    
-    
-    /**
-     * Returns the prefix of the user. If the User object has been obtained
-     * from a list of users in a channel, then this will reflect the user's
-     * status in that channel.
-     *
-     * @return The prefix of the user. If there is no prefix, then an empty
-     *         String is returned.
-     */
-    public String getPrefix() {
-        return _prefix;
-    }
-    
-    /**
-     * Returns whether or not the user represented by this object is an
-     * operator. If the User object has been obtained from a list of users
-     * in a channel, then this will reflect the user's operator status in
-     * that channel.
-     * 
-     * @return true if the user is an operator in the channel.
-     */
-    public boolean isOp() {
-        return _prefix.indexOf('@') >= 0;
-    }
-    
-    
-    /**
-     * Returns whether or not the user represented by this object has
-     * voice. If the User object has been obtained from a list of users
-     * in a channel, then this will reflect the user's voice status in
-     * that channel.
-     * 
-     * @return true if the user has voice in the channel.
-     */
-    public boolean hasVoice() {
-        return _prefix.indexOf('+') >= 0;
-    }        
-    
     
     /**
      * Returns the nick of the user.
@@ -101,13 +61,12 @@ public class User {
     
     
     /**
-     * Returns the nick of the user complete with their prefix if they
-     * have one, e.g. "@Dave".
+     * Returns the nick of the user.
      * 
-     * @return The user's prefix and nick.
+     * @return The user's nick.
      */
     public String toString() {
-        return this.getPrefix() + this.getNick();
+        return this.getNick();
     }
     
     
@@ -161,8 +120,6 @@ public class User {
         return -1;
     }
     
-    
-    private String _prefix;
     private String _nick;
     private String _lowerNick;
     
